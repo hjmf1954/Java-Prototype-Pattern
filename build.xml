@@ -1,0 +1,257 @@
+<?xml version="1.0"?>
+
+<!--
+     ==================================================================================================================
+      Ant XML Sample Build file for Prototype Pattern Demo in Java
+      Author        : HJM Frielink
+      Created       : 23 sep 2003 - Original version of ANT-Script
+      Modified      : See version information.
+     ==================================================================================================================
+-->
+
+<project name     = "Prototype"
+         default  = "all"
+         basedir  = "." >
+
+   <description>
+   Introduction:
+      Build file for the compilation and running of Java Prototype Example.
+
+   Requirements:
+      The property 'base' has been set to the current directory which makes execution possible in that directory.
+      Make sure you are running the software in the directory containing the 'build.xml' file.
+      The assumed environment is OSX, Linux or Unix. Not Windows.
+
+   Implementations:
+     This ant-build-file shows settings and implementation for:
+      * help    : Shows Basic Help using ANT.
+      * getos   : Gets the os-family of the operating system
+      * clear   : Clears Screen for Windows and Unix systems if property cls is defined
+      * show    : Shows the parameter settings
+      * clean   : Cleans the generated/compiled output directories
+      * init    : Creates the output directories
+      * info    : Information on the project
+      * compile : Compiles java files to classes
+      * compress: Creates an JAR-archive from the classes
+      * dist    : Deploys the JAR-archive (not implemented)
+      * execute : Executes the JAR-Archive
+      * all     : Default ant-target
+
+   ToDo or not done yet
+      * UNIT-Test implementation
+
+   Version Information:
+      1.0.1.0 - xx Jan 2004 - Introduction ANT scripts.
+      1.0.1.0 - 15 Apr 2014 - Introduction for Company 'Newcom' of ANT-scripts.
+      1.1.1.1 - 19 Jun 2017 - Prototype implementation
+      1.1.2.1 - 21 Jun 2017 - Task Info and Help
+   </description>
+
+   <!-- ======================================================= -->
+   <!-- Versioning information                                  -->
+   <!-- ======================================================= -->
+   <property name= "build.version.number"  value= "1.1.2.1"     />
+   <property name= "build.version.date"    value= "21 Jun 2017" />
+
+
+   <!-- ======================================================= -->
+   <!-- Properties settings, Ant-script variables               -->
+   <!-- Sets global properties for this build                   -->
+   <!-- ======================================================= -->
+   <property environment="env" />
+
+   <!-- ======================================================= -->
+   <!-- set global properties for this build -->
+   <!-- ======================================================= -->
+   <property name="base"   location="."                        />
+   <property name="src"    location="${base}/src"              />
+   <property name="build"  location="${base}/classes"          />
+   <property name="dist"   location="${base}/dist"             />
+   <property name="lib"    location="${dist}/lib"              />
+   <property name="info"   location= "build.info"              />
+
+   <property name="run"    value="PrototypeDemo"               />
+   <property name="clpjar" value="${lib}/Prototype.jar"        />
+
+   <!-- ======================================================= -->
+   <!-- Gets the operation system and sets isXXX variables      -->
+   <!-- V: 1.0.1.0 - Created                                    -->
+   <!-- ======================================================= -->
+   <target name="getos">
+      <!-- only one of the following will be set true -->
+      <condition property = "isWindoze">
+         <os family = "windows"/>
+      </condition>
+      <condition property = "isUnix">
+         <os family = "unix"/>
+      </condition>
+      <condition property = "isMac">
+         <os family = "mac" />
+      </condition>
+   </target>
+
+   <!-- ======================================================= -->
+   <!-- Clears the Screen                                       -->
+   <!-- ======================================================= -->
+   <target name         = "clear"
+           description  = "Clear Screen"
+           depends      = "getos">
+      <antcall target="clear.unix"    />
+      <antcall target="clear.windows" />
+   </target>
+   <target name = "clear.unix" if = "isUnix">
+      <echo>Unix clear</echo>
+      <exec executable = "/bin/bash">
+         <arg value = "-c"    />
+         <arg value = "clear" />
+      </exec>
+   </target>
+   <target name = "clear.windows" if = "isWindoze">
+      <exec executable="cls" />
+   </target>
+
+   <!-- ======================================================= -->
+   <!-- Inits the script by creating directories                -->
+   <!-- ======================================================= -->
+   <target name="init">
+      <tstamp/>
+      <mkdir dir="${build}"           />
+      <mkdir dir="${dist}"            />
+      <mkdir dir="${lib}"             />
+   </target>
+
+   <!-- ======================================================= -->
+   <target name         = "show"
+           depends      = "clear"
+           description  = "Shows properties of this ant script.">
+      <echo>--------------- Build variables ---------------------------------</echo>
+      <echo>Build Version : ${build.version.number} - ${build.version.date}  </echo>
+      <echo>base          : ${base}</echo>
+      <echo>src           : ${src}</echo>
+      <echo>build         : ${build}</echo>
+      <echo>dist          : ${dist}</echo>
+      <echo>run           : ${run}</echo>
+      <echo>lib           : ${lib}</echo>
+      <echo>info          : ${info}</echo>
+      <echo>OS-Name       : ${os.name}</echo>
+      <echo>OS-Arch       : ${os.arch}</echo>
+      <echo>OS-Version    : ${os.version}</echo>
+      <echo>=================================================================</echo>
+   </target>
+
+
+   <!-- ======================================================= -->
+   <!-- Shows information on the project if build.info exists   -->
+   <!-- V: 1.1.2.1 - Created.                                   -->
+   <!-- ======================================================= -->
+   <target name          = "info"
+           depends       = "clear, check-build-info"
+           description   = "Shows information on this project.">
+      <antcall target = "yes-info"></antcall>
+      <antcall target = "no-info" ></antcall>
+   </target>
+
+      <!-- Private target              -->
+      <!-- V: 1.1.2.1 - Created        -->
+      <target name="check-build-info">
+         <available file="build.info" property="build.info.present"/>
+      </target>
+
+      <!-- Private target              -->
+      <!-- V: 1.1.2.1 - Created        -->
+      <target name          = "yes-info"
+              depends       = "check-build-info"
+              if            = "build.info.present">
+         <loadfile property = "buildinfo" srcFile="build.info"/>
+         <echo>${buildinfo}</echo>
+      </target>
+
+      <!-- Private target              -->
+      <!-- V: 1.1.2.1 - Created        -->
+      <target name          = "no-info"
+              depends       = "check-build-info"
+              unless        = "build.info.present">
+         <echo>Sorry no information file present</echo>
+      </target>
+
+
+   <!-- ======================================================= -->
+   <!-- Cleans the output directories for a clean build         -->
+   <!-- ======================================================= -->
+   <target name         = "clean"
+           description  = "Clean up" >
+      <delete dir="${build}"  />
+      <delete dir="${dist}"   />
+   </target>
+
+   <!-- ======================================================= -->
+   <!-- Compiles the sources, classes in the build directory    -->
+   <!-- ======================================================= -->
+   <target name         = "compile"
+           depends      = "init"
+           description  = "Compiles the source(s)" >
+      <javac  srcdir="${src}"
+              destdir="${build}"
+              includeantruntime="false"
+              classpath=".;">
+        <compilerarg value="-Xlint:deprecation"/>
+        <compilerarg value="-Xlint:unchecked"/>
+      </javac>
+   </target>
+
+   <!-- ======================================================= -->
+   <!-- Creates a JAR-file                                      -->
+   <!-- ======================================================= -->
+   <target name      = "compress"
+           depends   = "compile">
+      <jar destfile = "${clpjar}"
+           basedir  = "${build}" />
+   </target>
+
+   <!-- ======================================================= -->
+   <!-- Wrapper for the compress target creating distribution   -->
+   <!-- ======================================================= -->
+   <target name         = "dist"
+           depends      = "compile, compress"
+           description  = "Create a jar file.">
+      <echo>Wrapper, not-implemented</echo>
+   </target>
+
+   <!-- ======================================================= -->
+   <!-- Executes PrototypeDemo from distribution version         -->
+   <!-- ======================================================= -->
+   <target name         = "execute"
+           depends      = "compile"
+           description  = "Executes PrototypeDemo" >
+      <echo>About to run ${run}...</echo>
+      <java classname="${run}" classpath=".:${clpjar}" />
+   </target>
+
+   <!-- ======================================================= -->
+   <!-- Default task, does it all                               -->
+   <!-- ======================================================= -->
+   <target name         = "all"
+           description  = "Do-It all"
+           depends      = "show, clean, init, dist, execute">
+      <echo>Default task 'all' done!</echo>
+   </target>
+
+   <!-- ======================================================= -->
+   <!-- Shows basic ANT information                             -->
+   <!-- ======================================================= -->
+   <target name         = "help"
+         description    = "Shows help for not ANT users">
+      <echo>
+   Commands to get help on ANT
+   - ant -p       : Shows help on the project (i.e. implemented in build.xml)
+   - ant help     : Shows this screen
+   - ant -help    : Shows ANT help screen. (shortcut ant -h)
+   See also       : http://ant.apache.org
+
+   Commands to get help on ANT build script. Please execute in the directory containing build.xml.
+   - ant info     : Shows Information on the pattern and on ANT and JAVA.
+   - ant show     : Shows the settings of the ANT-script variables.
+      </echo>
+   </target>
+
+</project>

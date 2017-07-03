@@ -1,0 +1,45 @@
+  Introduction
+  ============
+  The project PrototypeDemo is an implementation of:
+   - 'creational' Design Prototype
+  Design Patterns are the basic building blocks for creating maintainable software.
+
+  Designing object-oriented software is hard, and designing reusable object-oriented software is even harder.
+  Experienced object-oriented designers will tell you that a reusable and flexible design is difficult
+  if not impossible to get "right" the first time.
+  Before a design is finished, they usually try to reuse it several times, modifying it each time.
+
+  The given implementation is made with the following purpose:
+   1. Complete working example of the pattern written in Java.
+   2. Complete building by the client with ANT and JAVA.
+   3. No External Libraries needed.
+   4. The code-example is made to explain the pattern in Java and not to explain Java.
+
+   How to use
+   ==========
+   The following actions are required:
+   - Extract Archive-file into a directory of your choice.
+   - Open a terminal window (UNIX) or a DOS Command window (Windows).
+   - Goto the directory containing the files 'build.xml' and 'build.info'
+   - Execute the command 'ant all' to run almost all available commands.
+
+   Requirements
+   ============
+    JAVA Developer
+      Download JAVA from the website http://www.oracle.com/technetwork/java/javase/downloads/index.html
+      Follow th instruction given on the JAVA website.
+    Apache ANT
+      Download ANT from the website http://ant.apache.org
+      Follow the instruction given on the APche ANT website.
+    ANT-Script Base Directory
+      The ANT-build script has a default 'base' directory, which is the (partly relative) default directory.
+      All other directories are derived from this location.
+      Normally you should not change this.
+      Do not make changes unless you are familiar with ANT and know what you are doing.
+
+
+  Description
+  ===========
+  - Prototype : https://www.harmfrielink.nl/wiki/index.php/Prototype_Pattern
+  - Patterns  : https://www.harmfrielink.nl/wiki/index.php/Patterns
+
