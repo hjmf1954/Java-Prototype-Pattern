@@ -9,7 +9,7 @@ Used are:
 * Interface Item           Forces the derived items to implements the getClone Method.
 * Class     BasicItem      Abstract Class for methods that are valid for all derived Classes.
 * Class     Book           Example implementation of an item implements Item extending BasicItem.
-* Class     CS             Example implementation of an item implements Item extending BasicItem.
+* Class     CD             Example implementation of an item implements Item extending BasicItem.
 *
 * The example uses a simplified (unrealistic) Book and CD as examples.
 * The BasicItem abstract class has been introduced to show how a class:
@@ -19,15 +19,13 @@ Used are:
 *
 * All classes are placed in this single file for simplicity and ease of usage.
 *
-* How useful is the prototype pattern using cloning in Java.
-* Since nowadays the new operator is Java is extremely fast, cloning is not necessary anymore.
+* How useful is the prototype pattern using cloning in Java?
+* Since nowadays the new operator in Java is extremely fast, cloning is not necessary anymore.
 * So see the pattern implementation as an example of Java techniques for clone, interface and
 * abstract classes.
 *
 * See the documentation on https://www.harmfrielink.nl/wiki/index.php/Prototype_(Pattern)
 */
-
-import java.util.Hashtable;
 
 /**
  * The calling Client-app class.
@@ -46,20 +44,26 @@ public class PrototypeDemo {
       CloneFactory itemMaker = new CloneFactory();
 
       /* Creating the initial instances. */
-      Book theDaVinciCode = new Book() ; theDaVinciCode.setTitle("The Da Vinci Code");
-      CD   pfEchoes       = new CD()   ; pfEchoes.setTitle("Echoes");
+      Book theDaVinciCode = new Book() ;
+      theDaVinciCode.setTitle("The Da Vinci Code");
+      theDaVinciCode.setPrice(20.90);
+      theDaVinciCode.setISBN("978-0307474278");
+
+      CD   pfEchoes       = new CD()   ;
+      pfEchoes.setTitle("Echoes");
 
       /* Gets the cloned instances of the Book and CD. */
       Book clonedTheDaVinciCode = (Book) itemMaker.getClone(theDaVinciCode);
+      clonedTheDaVinciCode.setTitle("Inferno");
+      clonedTheDaVinciCode.setPrice(14.99);
+      clonedTheDaVinciCode.setISBN("789-12345678");
       CD   clonedEchoes         = (CD)   itemMaker.getClone(pfEchoes);
 
-      /* Shows the object bucket numbers. */
-      System.out.println("-------------------: Object Hash-codes (Bucket number)");
-      System.out.println("Book Da Vinci Code : " + theDaVinciCode.hashCode());
-      System.out.println("Clone Da Vinci Code: " + clonedTheDaVinciCode.hashCode());
+      System.out.println( "Orginal " + theDaVinciCode.toString() );
+      System.out.println( "Cloned  " + clonedTheDaVinciCode.toString() );
 
-      System.out.println("CD Echoes          : " + pfEchoes.hashCode());
-      System.out.println("Clone Echoes       : " + clonedTheDaVinciCode.hashCode());
+      System.out.println( "Original " + pfEchoes.toString() );
+      System.out.println( "Cloned   " + clonedTheDaVinciCode.toString() );
 
    } // main
 }  // PrototypeDemo
@@ -93,14 +97,14 @@ interface Item extends Cloneable {
 }  // interface Item
 
 /**
- * Class <code>basicItem</code> implements the elements all items.
+ * Class <code>BasicItem</code> implements the elements for all items.
  */
 abstract class BasicItem {
    /** Title for item.        */
-   private String title = "";
+   protected String title = "";
 
    /** Proces for the item.   */
-   private double price = 0.0;
+   protected double price = 0.0;
 
     /**
     * Getter for the title.
@@ -130,10 +134,18 @@ abstract class BasicItem {
  * Implements prototype for Item Book.
  */
 class Book extends BasicItem implements Item {
-   private String ISBN;
+   private String isbn;
 
    public Book() {
-      System.out.println("Book has been created.");
+      // System.out.println("Book has been created.");
+   }
+
+   public void setISBN(String newISBN) {
+      isbn = newISBN;
+   }
+
+   public String getISBN() {
+      return isbn;
    }
 
    @Override
@@ -142,15 +154,17 @@ class Book extends BasicItem implements Item {
 
       try {
          bookObject = (Book) super.clone();
-         System.out.println( String.format("Book '%s' has been cloned.", getTitle() ));
+         // System.out.println( String.format("Book '%s' has been cloned.", getTitle() ));
       } catch (CloneNotSupportedException e) {
          e.printStackTrace();
       }
       return bookObject;
    }
 
-   public String toString(){
-      return "Book XXX is my favorite";
+   public String toString() {
+      return
+         String.format("Book Title %s, Price %.2f, ISBN %s",
+            title, price, isbn);
    }
 }  // Book
 
@@ -159,10 +173,10 @@ class Book extends BasicItem implements Item {
  * Implements prototype for Item CD.
  */
 class CD extends BasicItem implements Item {
-   private String CNNumber;
+   private String catNumber;
 
    public CD() {
-      System.out.println("CD has been created.");
+      // System.out.println("CD has been created.");
    }
 
    @Override
@@ -171,14 +185,26 @@ class CD extends BasicItem implements Item {
 
       try {
          cdObject = (CD) super.clone();
-         System.out.println( String.format("CD '%s' has been cloned.", getTitle() ));
+         // System.out.println( String.format("CD '%s' has been cloned.", getTitle() ));
       } catch (CloneNotSupportedException e) {
          e.printStackTrace();
       }
       return cdObject;
    }
 
+   public void setCatNumber(String newCatNumber) {
+      catNumber = newCatNumber;
+   }
+
+   public String getCatNumber() {
+      return catNumber;
+   }
+
+
    public String toString(){
-      return "CD YYY is my favorite";
+      return
+         String.format("CD Title %s, Price %.2f, CatNumber %s",
+            title, price, catNumber);
+
    }
 }  // CD
